@@ -16,7 +16,7 @@ export const customerResolvers = {
     meCustomer: (_, __, context: Required<MyContext>) => {
       console.log('get me')
       return getCustomerBy('email', context.customer.email)
-    }
+    },
   },
   Mutation: {
     async registerCustomer(_, { input }, context) {
@@ -29,10 +29,21 @@ export const customerResolvers = {
     },
     async loginCustomer(_, { input }, context) {
       await loginCustomerValidator.validate(input, { abortEarly: false })
-      context.res.cookie('myCookieName', 'cookieValue', {
+      const customerData = await loginCustomer(input)
+
+      context.res.cookie('refresh-token', customerData.refreshToken, {
         httpOnly: true,
       })
-      return loginCustomer(input)
+
+      return customerData
+    },
+    async logoutCustomer(_, __, context) {
+      context.res.cookie('refresh-token', null, {
+        httpOnly: true,
+        expires: new Date(0),
+      })
+
+      return true
     },
     async refreshToken(_, __, { req }: { req }) {
       const refreshToken = req.cookies['refresh-token']

@@ -1,5 +1,5 @@
-import { PrismaClient, Product } from '@prisma/client'
-import { CreateCategoryData } from '../types/category.types'
+import { PrismaClient } from '@prisma/client'
+import { CreateCategoryData } from '../../types/category.types'
 
 const prisma = new PrismaClient()
 

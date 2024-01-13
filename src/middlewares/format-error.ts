@@ -31,16 +31,15 @@ export const formatError = (
         validationErrors[fieldName] = []
       }
       validationErrors[fieldName].push(err.message)
-
-      return {
-        ...formattedError,
-        message: 'Invalid input provided!',
-        extensions: {
-          code: 'VALIDATION_ERROR',
-          errors: validationErrors,
-        },
-      }
     })
+    return {
+      ...formattedError,
+      message: 'Invalid input provided!',
+      extensions: {
+        code: 'VALIDATION_ERROR',
+        errors: validationErrors,
+      },
+    }
   }
   // Otherwise return the formatted error. This error can also
   // be manipulated in other ways, as long as it's returned.

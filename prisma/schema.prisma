@@ -11,54 +11,211 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// model User {
-//   id        Int      @id @default(autoincrement())
-//   email     String   @unique
-//   phone     String   @unique
-//   name      String
-//   password  String
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255)
+  parentId  Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-// model Vendor {
-//   id        Int      @id @default(autoincrement())
-//   name      String
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
-
-model Product {
-  id         Int               @id @default(autoincrement())
-  name       String            @db.VarChar(255)
-  categories ProductCategory[]
-  createdAt  DateTime          @default(now())
-  updatedAt  DateTime          @updatedAt
+  parent   Category?         @relation("ChildToParent", fields: [parentId], references: [id])
+  children Category[]        @relation("ChildToParent")
+  products ProductCategory[]
 }
 
-model Category {
-  id        Int               @id @default(autoincrement())
-  name      String            @db.VarChar(255)
-  parent   Category? @relation("ChildToParent", fields: [parentId], references: [id])
-  parentId Int?
-  children Category[] @relation("ChildToParent")
-  products  ProductCategory[]
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(255)
+  price       Int      @default(0)
+  description String?  @db.Text
+  details     String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  variations Variation[]
+
+  categories            ProductCategory[]
+  productVariationTypes ProductVariationType[]
+  orderProduct          OrderProduct[]
+  cartProduct           CartProduct[]
 }
 
 model ProductCategory {
-  product    Product  @relation(fields: [productId], references: [id])
-  productId  Int // relation scalar field (used in the `@relation` attribute above)
-  category   Category @relation(fields: [categoryId], references: [id])
-  categoryId Int // relation scalar field (used in the `@relation` attribute above)
+  productId  Int
+  categoryId Int
+
+  product  Product  @relation(fields: [productId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
 
   @@id([productId, categoryId])
 }
 
-// model Variation {
-//   id        Int      @id @default(autoincrement())
-//   name      String   @db.VarChar(255)
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
+model VariationType {
+  id        Int     @id @default(autoincrement())
+  name      String  @db.VarChar(255)
+  component String  @default("list") @db.VarChar(255)
+  required  Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  variations           Variation[]
+  productVariationType ProductVariationType[]
+}
+
+model ProductVariationType {
+  product         Product       @relation(fields: [productId], references: [id])
+  variationType   VariationType @relation(fields: [variationTypeId], references: [id])
+  productId       Int
+  variationTypeId Int
+
+  @@id([productId, variationTypeId])
+}
+
+model Variation {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255)
+  value     String?  @db.VarChar(255)
+  slug      String?  @db.VarChar(255)
+  price     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  parentId  Int?
+  typeId    Int
+  productId Int
+
+  parent               Variation?             @relation("ChildToParent", fields: [parentId], references: [id])
+  children             Variation[]            @relation("ChildToParent")
+  type                 VariationType          @relation(fields: [typeId], references: [id])
+  Product              Product?               @relation(fields: [productId], references: [id])
+  orderVariations      OrderVariation[]
+  stock                Stock[]
+  availableStock       AvailableStock?
+  cartProductVariation CartProductVariation[]
+}
+
+model Stock {
+  id          Int      @id @default(autoincrement())
+  variationId Int
+  quantity    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  variation Variation @relation(fields: [variationId], references: [id])
+}
+
+model AvailableStock {
+  id          Int      @id @default(autoincrement())
+  variationId Int      @unique
+  quantity    Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  variation Variation @relation(fields: [variationId], references: [id])
+}
+
+model Customer {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  phone        String?  @unique
+  name         String
+  password     String
+  refreshToken String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  orders Order[]
+  cart   Cart?
+}
+
+model Cart {
+  id         Int      @id @default(autoincrement())
+  customerId Int      @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  customer     Customer      @relation(fields: [customerId], references: [id])
+  cartProducts CartProduct[]
+}
+
+model CartProduct {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  cartId    Int
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product    Product                @relation(fields: [productId], references: [id])
+  cart       Cart                   @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  variations CartProductVariation[]
+}
+
+model CartProductVariation {
+  variationId   Int
+  quantity      Int @default(1)
+  cartProductId Int
+
+  cartProduct CartProduct @relation(fields: [cartProductId], references: [id], onDelete: Cascade)
+  variation   Variation   @relation(fields: [variationId], references: [id])
+
+  @@id([variationId, cartProductId])
+}
+
+model Order {
+  id         Int      @id @default(autoincrement())
+  customerId Int?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  customer      Customer?      @relation(fields: [customerId], references: [id])
+  orderProducts OrderProduct[]
+  orderStatuses OrderStatus[]
+}
+
+model OrderStatus {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  status    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model OrderProduct {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  orderId   Int
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product         Product          @relation(fields: [productId], references: [id])
+  order           Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderVariations OrderVariation[]
+}
+
+model OrderVariation {
+  id             Int      @id @default(autoincrement())
+  variationId    Int
+  orderProductId Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  orderProduct OrderProduct @relation(fields: [orderProductId], references: [id], onDelete: Cascade)
+  variation    Variation    @relation(fields: [variationId], references: [id])
+}
+
+model Media {
+  id         Int      @id @default(autoincrement())
+  filename   String
+  mimetype   String
+  encoding   String
+  url        String
+  size       Int
+  objectId   Int
+  objectType String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

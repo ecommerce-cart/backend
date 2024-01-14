@@ -6,6 +6,7 @@ export const customerTypeDefs = gql`
     name: String!
     email: String!
     phone: String!
+    image: String
     accessToken: String
     createdAt: String!
     updatedAt: String!
@@ -30,6 +31,7 @@ export const customerTypeDefs = gql`
   type Mutation {
     registerCustomer(input: RegisterCustomerInput!): Customer
     loginCustomer(input: LoginCustomerInput!): Customer
+    logoutCustomer: Boolean
     refreshToken: Customer
   }
 `

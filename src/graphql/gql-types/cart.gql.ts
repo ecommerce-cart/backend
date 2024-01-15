@@ -10,9 +10,12 @@ export const cartTypeDefs = gql`
   }
   type Cart {
     items: [CartItem]!
-    total: String!
+    total: Int!
+    displayedTotal: String!
     subTotal: String!
+    displayedSubTotal: String!
     shipping: String!
+    displayedShipping: String!
   }
 
   type Query {

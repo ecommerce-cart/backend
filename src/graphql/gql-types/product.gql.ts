@@ -27,7 +27,8 @@ export const productTypeDefs = gql`
   type Product {
     id: Int!
     name: String!
-    price: String!
+    price: Int!
+    displayedPrice: String!
     variationTypes: [VariationType]
     images: [String]
     description: String

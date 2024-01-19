@@ -17,9 +17,9 @@ export const cartMapper = (cart: Cart) => {
 
             return {
               id: cartProduct.id,
-              title: `${cartProduct.product.name} / ${cartProduct.variations
-                .map((v) => v.variation.name)
-                .join(' / ')}`,
+              title: `${cartProduct.product.name} ${cartProduct.variations
+                .map((v) => ` / ${v.variation.name}`)
+                .join(' ')}`,
               quantity: cartProduct.quantity,
               price,
               displayedPrice: money(price).egp(),

@@ -124,8 +124,9 @@ model Customer {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  orders Order[]
-  cart   Cart?
+  orders    Order[]
+  cart      Cart?
+  addresses Address[]
 }
 
 model Cart {
@@ -218,4 +219,34 @@ model Media {
   objectType String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+model Country {
+  id     Int    @id @default(autoincrement())
+  name   String
+  code   String
+  cities City[]
+}
+
+model City {
+  id        Int    @id @default(autoincrement())
+  name      String
+  code      String
+  countryId Int
+
+  addresses Address[]
+  country   Country   @relation(fields: [countryId], references: [id])
+}
+
+model Address {
+  id         Int     @id @default(autoincrement())
+  customerId Int
+  default    Boolean @default(true)
+  street     String
+  state      String
+  cityId     Int
+  zipcode    String?
+
+  city     City     @relation(fields: [cityId], references: [id])
+  customer Customer @relation(fields: [customerId], references: [id])
 }

@@ -5,6 +5,7 @@ import {
   creamyTippedPolloImages,
   greenTippedPolloImages,
 } from '../../dummy/images.dummy'
+import { getAddresses } from '../../dummy/addresses.dummy'
 
 const prisma = prismaClient
 
@@ -108,6 +109,9 @@ const tableNames = [
   'Cart',
   'AvailableStock',
   'Media',
+  'Country',
+  'City',
+  'Address',
 ]
 
 async function truncate() {
@@ -129,7 +133,22 @@ export const seed = async () => {
     },
   })
 
-  await prisma.category.createMany({
+  const country = await prisma.country.create({
+    data: {
+      name: 'Egypt',
+      code: 'EG',
+    },
+  })
+
+  await prisma.city.createMany({
+    data: getAddresses().map((address) => ({
+      name: address.name,
+      code: address.code,
+      countryId: country.id,
+    })),
+  })
+
+  const categories = await prisma.category.createMany({
     data: [
       {
         name: 'Mens',

@@ -1,5 +1,7 @@
 FROM node:18.17.0-alpine AS base
 
+RUN mkdir -p /home/node/backend/node_modules
+
 WORKDIR /home/node/backend
 
 COPY ./package.json ./
@@ -7,10 +9,14 @@ COPY ./yarn.lock ./
 
 RUN yarn
 
+RUN npx prisma generate
+
 COPY . .
 
-FROM base as production
+RUN yarn install
 
-ENV NODE_PATH=./dist
+# FROM base as production
 
-RUN yarn build
+# ENV NODE_PATH=./dist
+
+# RUN yarn build

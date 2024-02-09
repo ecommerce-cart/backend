@@ -15,7 +15,6 @@ export const categoryTypeDefs = gql`
   }
 
   type Query {
-    hello: String
     categories: [Category]
   }
 

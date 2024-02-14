@@ -4,12 +4,13 @@ export const addToCart = async ({
   productId,
   variations,
   quantity,
+  customerId
 }: {
   productId: number
   variations: Array<number>
-  quantity: number
+  quantity: number,
+  customerId: number
 }) => {
-  const customerId = 1
   let cart = await prismaClient.cart.findFirst({
     where: {
       customerId,

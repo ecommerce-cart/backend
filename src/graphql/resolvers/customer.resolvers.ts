@@ -14,7 +14,6 @@ import { generateAccessToken } from '../../services/lib/jwt.service'
 export const customerResolvers = {
   Query: {
     meCustomer: (_, __, context: Required<MyContext>) => {
-      console.log('get me')
       return getCustomerBy('email', context.customer.email)
     },
   },
@@ -48,7 +47,7 @@ export const customerResolvers = {
     async refreshToken(_, __, { req }: { req }) {
       const refreshToken = req.cookies['refresh-token']
 
-      console.log(refreshToken)
+      console.log('refreshToken', refreshToken)
 
       if (refreshToken) {
         try {

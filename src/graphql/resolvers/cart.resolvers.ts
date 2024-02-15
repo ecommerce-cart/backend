@@ -5,10 +5,10 @@ import { Cart } from '../../types/models/index.types'
 
 export const cartResolvers = {
   Query: {
-    async showCart() {
+    async showCart(_, __, context) {
       const cart = await prisma.cart.findFirst({
         where: {
-          customerId: 1,
+          customerId: context.customer.id,
         },
         include: {
           cartProducts: {
@@ -28,8 +28,8 @@ export const cartResolvers = {
     },
   },
   Mutation: {
-    async addToCart(_, { input }) {
-      await service.addToCart(input)
+    async addToCart(_, { input }, context) {
+      await service.addToCart({ ...input, customerId: context.customer.id })
       return true
     },
     async updateCartQuantity(_, { input }) {

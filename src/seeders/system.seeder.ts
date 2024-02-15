@@ -6,6 +6,7 @@ import {
   greenTippedPolloImages,
 } from '../../dummy/images.dummy'
 import { getAddresses } from '../../dummy/addresses.dummy'
+import { generateRefreshToken } from '../services/lib/jwt.service'
 
 const prisma = prismaClient
 
@@ -130,6 +131,7 @@ export const seed = async () => {
       name: 'Taha Mohamed',
       password: await bcrypt.hash('123123', 10),
       phone: '01507717263',
+      refreshToken: generateRefreshToken({ email: 'taha.mohamed@cart.com' })
     },
   })
 

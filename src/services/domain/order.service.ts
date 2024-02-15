@@ -3,6 +3,10 @@ import { ordersMapper } from '../../mappers/response/order.mapper'
 import { Order } from '../../types/models/index.types'
 
 export const createOrder = async () => {
+  /**
+   * FIXME:
+   * We don't need the customerId as we will use the customer info in the order
+   */
   const customerId = 1
 
   const cart = await prismaClient.cart.findFirst({

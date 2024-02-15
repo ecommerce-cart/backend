@@ -3,16 +3,16 @@ import prisma from '../../clients/prisma.client'
 import { createAddressValidator } from '../../validations/address.validations'
 
 const create = async (
-  data: InferType<typeof createAddressValidator>
+  data: InferType<typeof createAddressValidator>,
+  customerId: number
 ) => {
-  const customerId = 1
   await prisma.address.updateMany({
     where: {
-      customerId
+      customerId,
     },
     data: {
-      default: false
-    }
+      default: false,
+    },
   })
   return prisma.address.create({
     data: {
@@ -30,14 +30,30 @@ const findAll = async () => {
     include: {
       city: {
         include: {
-          country: true
-        }
-      }
-    }
+          country: true,
+        },
+      },
+    },
+  })
+}
+
+const findManyBy = async (key: 'customerId' | 'id', value: string) => {
+  return prisma.address.findMany({
+    where: {
+      [key]: value,
+    },
+    include: {
+      city: {
+        include: {
+          country: true,
+        },
+      },
+    },
   })
 }
 
 export default {
   create,
-  findAll
+  findAll,
+  findManyBy
 }

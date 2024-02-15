@@ -10,10 +10,10 @@ import {
 
 export const cartResolvers = {
   Query: {
-    async showCart() {
+    async showCart(_, __, context) {
       const cart = await prisma.cart.findFirst({
         where: {
-          customerId: 1,
+          customerId: context.customer.id,
         },
         include: {
           cartProducts: {

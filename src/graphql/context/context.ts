@@ -1,7 +1,7 @@
 import { StandaloneServerContextFunctionArgument } from '@apollo/server/dist/esm/standalone'
 import { IncomingMessage } from 'http'
-import jwt from 'jsonwebtoken'
-
+import jwt, { JwtPayload } from 'jsonwebtoken'
+import { getCustomerBy } from '../../services/domain/customer.service'
 export interface MyContext {
   // You can optionally create a TS interface to set up types
   // for your contextValue
@@ -17,7 +17,11 @@ const getCustomer = (req: IncomingMessage) => {
 
   if (token) {
     try {
-      return jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET)
+      const data = jwt.verify(
+        token,
+        process.env.JWT_ACCESS_TOKEN_SECRET
+      ) as JwtPayload
+      return getCustomerBy('email', data.email)
     } catch (e) {}
   }
 
@@ -29,7 +33,7 @@ export const context = async ({
   res,
 }: StandaloneServerContextFunctionArgument) => {
   return {
-    customer: getCustomer(req),
+    customer: await getCustomer(req),
     req,
     res,
   }

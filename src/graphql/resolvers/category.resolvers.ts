@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { createCategoryValidator } from '../../validations/category-validations'
+import { createCategoryValidator } from '../../validations/category.validations'
 import CategoryService from '../../services/domain/category.service'
 import { GraphQLError } from 'graphql'
 const prisma = new PrismaClient()

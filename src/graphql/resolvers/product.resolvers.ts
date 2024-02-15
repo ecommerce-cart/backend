@@ -1,5 +1,5 @@
 import { create, getAll, getProductById } from '../../services/domain/product.service'
-import { createProductValidator } from '../../validations/product-validations'
+import { createProductValidator } from '../../validations/product.validations'
 
 export const productResolvers = {
   Mutation: {

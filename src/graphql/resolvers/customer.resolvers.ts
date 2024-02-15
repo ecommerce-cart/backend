@@ -7,7 +7,7 @@ import {
 import {
   loginCustomerValidator,
   registerCustomerValidator,
-} from '../../validations/customer-validations'
+} from '../../validations/customer.validations'
 import { MyContext } from '../context/context'
 import { generateAccessToken } from '../../services/lib/jwt.service'
 

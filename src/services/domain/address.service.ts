@@ -2,10 +2,7 @@ import { InferType } from 'yup'
 import prisma from '../../clients/prisma.client'
 import { createAddressValidator } from '../../validations/address.validations'
 
-const create = async (
-  data: InferType<typeof createAddressValidator>,
-  customerId: number
-) => {
+const create = async (data: InferType<typeof createAddressValidator>, customerId: number) => {
   await prisma.address.updateMany({
     where: {
       customerId,
@@ -55,5 +52,5 @@ const findManyBy = async (key: 'customerId' | 'id', value: string) => {
 export default {
   create,
   findAll,
-  findManyBy
+  findManyBy,
 }

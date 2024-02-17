@@ -2,11 +2,7 @@ import prisma from '../../clients/prisma.client'
 import { cartMapper } from '../../mappers/response/cart.mapper'
 import service from '../../services/domain/cart.service'
 import { Cart } from '../../types/models/index.types'
-import { 
-  addToCartValidator, 
-  deleteCartProductValidator, 
-  updateCartValidator 
-} from '../../validations/cart.validation'
+import { addToCartValidator, deleteCartProductValidator, updateCartValidator } from '../../validations/cart.validation'
 
 export const cartResolvers = {
   Query: {

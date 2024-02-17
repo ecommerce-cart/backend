@@ -13,25 +13,19 @@ const getCustomer = (req: IncomingMessage) => {
   const authorizationHeader = req.headers.authorization || ''
   const token = authorizationHeader.replace('Bearer ', '')
 
-  // console.log('token', token)
-
   if (token) {
     try {
-      const data = jwt.verify(
-        token,
-        process.env.JWT_ACCESS_TOKEN_SECRET
-      ) as JwtPayload
+      const data = jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET) as JwtPayload
       return getCustomerBy('email', data.email)
-    } catch (e) {}
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   return null
 }
 
-export const context = async ({
-  req,
-  res,
-}: StandaloneServerContextFunctionArgument) => {
+export const context = async ({ req, res }: StandaloneServerContextFunctionArgument) => {
   return {
     customer: await getCustomer(req),
     req,

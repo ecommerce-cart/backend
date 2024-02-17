@@ -4,11 +4,11 @@ export const addToCart = async ({
   productId,
   variations,
   quantity,
-  customerId
+  customerId,
 }: {
   productId: number
   variations: Array<number>
-  quantity: number,
+  quantity: number
   customerId: number
 }) => {
   let cart = await prismaClient.cart.findFirst({
@@ -37,13 +37,7 @@ export const addToCart = async ({
   })
 }
 
-export const updateCartQuantity = async ({
-  cartProductId,
-  quantity,
-}: {
-  cartProductId: number
-  quantity: number
-}) => {
+export const updateCartQuantity = async ({ cartProductId, quantity }: { cartProductId: number; quantity: number }) => {
   await prismaClient.cartProduct.update({
     where: {
       id: cartProductId,
@@ -56,11 +50,7 @@ export const updateCartQuantity = async ({
   return true
 }
 
-export const deleteCartProduct = async ({
-  cartProductId,
-}: {
-  cartProductId: number
-}) => {
+export const deleteCartProduct = async ({ cartProductId }: { cartProductId: number }) => {
   await prismaClient.cartProduct.delete({
     where: {
       id: cartProductId,

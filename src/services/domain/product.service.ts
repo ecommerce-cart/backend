@@ -1,9 +1,6 @@
 import _ from 'lodash'
 
-import {
-  productMapper,
-  productsMapper,
-} from '../../mappers/response/product.mapper'
+import { productMapper, productsMapper } from '../../mappers/response/product.mapper'
 import prismaClient from '../../clients/prisma.client'
 import { Product } from '../../types/models/index.types'
 

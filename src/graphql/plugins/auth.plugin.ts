@@ -19,10 +19,7 @@ export const authPlugin: ApolloServerPlugin<MyContext> = {
           'DeleteCartProduct',
         ]
         // Check if the operation is one of the protected queries/mutations
-        if (
-          protectedQueriesAndMutations.includes(operationName) &&
-          !contextValue.customer
-        ) {
+        if (protectedQueriesAndMutations.includes(operationName) && !contextValue.customer) {
           throw new GraphQLError('Authentication required', {
             extensions: {
               code: 'UNAUTHENTICATED',

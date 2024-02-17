@@ -18,5 +18,5 @@ export const typeDefs = mergeTypeDefs([
   orderTypeDefs,
   countryTypeDefs,
   cityTypeDefs,
-  addressTypeDefs
+  addressTypeDefs,
 ])

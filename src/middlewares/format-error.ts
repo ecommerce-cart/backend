@@ -1,18 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApolloServerErrorCode } from '@apollo/server/errors'
 import { GraphQLFormattedError } from 'graphql'
 import { ValidationError } from 'yup'
 
-export const formatError = (
-  formattedError: GraphQLFormattedError,
-  error: any
-): GraphQLFormattedError => {
+export const formatError = (formattedError: GraphQLFormattedError, error: any): GraphQLFormattedError => {
   console.log(error)
 
   // Return a different error message
-  if (
-    formattedError.extensions.code ===
-    ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED
-  ) {
+  if (formattedError.extensions.code === ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED) {
     return {
       ...formattedError,
       message: "Your query doesn't match the schema. Try double-checking it!",

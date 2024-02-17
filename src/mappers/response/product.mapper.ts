@@ -20,14 +20,6 @@ export const getMinMaxPrice = (product: Product) => {
   return [minPrice, maxPrice]
 }
 
-const displayPrice = (p: Product) => {
-  const [minPrice, maxPrice] = getMinMaxPrice(p)
-
-  return minPrice === maxPrice
-    ? `${money(minPrice).egp()}`
-    : `From ${minPrice} To ${maxPrice}`
-}
-
 export const productMapper = async (p: Product, images: Array<Media>) => {
   return {
     id: p.id,
@@ -45,10 +37,7 @@ export const productMapper = async (p: Product, images: Array<Media>) => {
   }
 }
 
-export const productsMapper = (
-  products: Array<Product>,
-  images: Record<string, Array<Media>>
-) => {
+export const productsMapper = (products: Array<Product>, images: Record<string, Array<Media>>) => {
   return products.map((p) => ({
     id: p.id,
     name: p.name,

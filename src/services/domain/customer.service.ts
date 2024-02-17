@@ -2,29 +2,21 @@ import { Customer } from '@prisma/client'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
-import {
-  LoginCustomerData,
-  RegisterCustomerData,
-} from '../../types/customer.types'
+import { LoginCustomerData, RegisterCustomerData } from '../../types/customer.types'
 import { GraphQLError } from 'graphql'
 import { generateAccessToken, generateRefreshToken } from '../lib/jwt.service'
 import prismaClient from '../../clients/prisma.client'
 
 const prisma = prismaClient
 
-export const getCustomerBy = (
-  by: 'id' | 'name' | 'email' | 'refreshToken',
-  value: string
-) =>
+export const getCustomerBy = (by: 'id' | 'name' | 'email' | 'refreshToken', value: string) =>
   prisma.customer.findFirst({
     where: {
       [by]: value,
     },
   })
 
-export const registerCustomer = async (
-  data: RegisterCustomerData
-): Promise<Customer & { accessToken: string }> => {
+export const registerCustomer = async (data: RegisterCustomerData): Promise<Customer & { accessToken: string }> => {
   const customer = await createCustomer(data)
   return {
     ...customer,
@@ -67,12 +59,7 @@ export const loginCustomer = async ({
   }
 }
 
-export const createCustomer = async ({
-  name,
-  email,
-  phone,
-  password,
-}: RegisterCustomerData) => {
+export const createCustomer = async ({ name, email, phone, password }: RegisterCustomerData) => {
   const customerExists = await prisma.customer.findFirst({
     where: {
       email,

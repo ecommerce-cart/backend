@@ -14,5 +14,5 @@ export const resolvers = mergeResolvers([
   cartResolvers,
   orderResolvers,
   cityResolvers,
-  addressResolvers
+  addressResolvers,
 ])

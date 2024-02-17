@@ -10,9 +10,7 @@ export const cartMapper = (cart: Cart) => {
     items:
       cart && cart.cartProducts
         ? cart.cartProducts.map((cartProduct) => {
-            const price =
-              getMaxVariationPrice(cartProduct.variations) *
-              cartProduct.quantity
+            const price = getMaxVariationPrice(cartProduct.variations) * cartProduct.quantity
             subTotal += price
 
             return {

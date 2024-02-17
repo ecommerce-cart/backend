@@ -1,13 +1,6 @@
 import { GraphQLError } from 'graphql'
-import {
-  getCustomerBy,
-  loginCustomer,
-  registerCustomer,
-} from '../../services/domain/customer.service'
-import {
-  loginCustomerValidator,
-  registerCustomerValidator,
-} from '../../validations/customer.validations'
+import { getCustomerBy, loginCustomer, registerCustomer } from '../../services/domain/customer.service'
+import { loginCustomerValidator, registerCustomerValidator } from '../../validations/customer.validations'
 import { MyContext } from '../context/context'
 import { generateAccessToken } from '../../services/lib/jwt.service'
 
@@ -54,14 +47,14 @@ export const customerResolvers = {
           const customer = await getCustomerBy('refreshToken', refreshToken)
           const accessToken = generateAccessToken({ email: customer.email })
           return { ...customer, accessToken }
-        } catch (e) {}
+        } catch (e) {
+          throw new GraphQLError('Authentication required', {
+            extensions: {
+              code: 'INVALID_REFRESH_TOKEN',
+            },
+          })
+        }
       }
-
-      throw new GraphQLError('Authentication required', {
-        extensions: {
-          code: 'INVALID_REFRESH_TOKEN',
-        },
-      })
     },
   },
 }

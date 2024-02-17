@@ -15,7 +15,7 @@ const create = async (data: CreateCategoryData) => {
     },
     include: {
       children: true,
-      parent: true
+      parent: true,
     },
   })
 

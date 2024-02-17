@@ -1,19 +1,12 @@
 import bcrypt from 'bcrypt'
 import prismaClient from '../clients/prisma.client'
-import {
-  blackTippedPolloImages,
-  creamyTippedPolloImages,
-  greenTippedPolloImages,
-} from '../../dummy/images.dummy'
+import { blackTippedPolloImages, creamyTippedPolloImages, greenTippedPolloImages } from '../../dummy/images.dummy'
 import { getAddresses } from '../../dummy/addresses.dummy'
 import { generateRefreshToken } from '../services/lib/jwt.service'
 
 const prisma = prismaClient
 
-const createColorVariationsFor = async (
-  productId: number,
-  materialName: 'Cotton' | 'Soft'
-) => {
+const createColorVariationsFor = async (productId: number, materialName: 'Cotton' | 'Soft') => {
   const parentId = (
     await prisma.variation.findFirst({
       where: {
@@ -55,10 +48,7 @@ const createColorVariationsFor = async (
   })
 }
 
-const createSizeVariationsFor = async (
-  productId: number,
-  colorSlug: 'off-white' | 'black' | 'green' | 'red'
-) => {
+const createSizeVariationsFor = async (productId: number, colorSlug: 'off-white' | 'black' | 'green' | 'red') => {
   const parentIds = (
     await prisma.variation.findMany({
       where: {
@@ -93,8 +83,8 @@ const createSizeVariationsFor = async (
             typeId: 3, // size
           },
         ],
-      })
-    )
+      }),
+    ),
   )
 }
 
@@ -116,22 +106,19 @@ const tableNames = [
 ]
 
 async function truncate() {
-  for (const tableName of tableNames)
-    await prisma.$queryRawUnsafe(
-      `Truncate "${tableName}" restart identity cascade;`
-    )
+  for (const tableName of tableNames) await prisma.$queryRawUnsafe(`Truncate "${tableName}" restart identity cascade;`)
 }
 
 export const seed = async () => {
   await truncate()
 
-  const customer = await prisma.customer.create({
+  await prisma.customer.create({
     data: {
       email: 'taha.mohamed@cart.com',
       name: 'Taha Mohamed',
       password: await bcrypt.hash('123123', 10),
       phone: '01507717263',
-      refreshToken: generateRefreshToken({ email: 'taha.mohamed@cart.com' })
+      refreshToken: generateRefreshToken({ email: 'taha.mohamed@cart.com' }),
     },
   })
 
@@ -150,7 +137,7 @@ export const seed = async () => {
     })),
   })
 
-  const categories = await prisma.category.createMany({
+  await prisma.category.createMany({
     data: [
       {
         name: 'Mens',
@@ -186,11 +173,7 @@ export const seed = async () => {
 
   // Create one grandparent variation for the first product
   await prisma.variationType.createMany({
-    data: [
-      { name: 'Material' },
-      { name: 'Color', component: 'color' },
-      { name: 'size' },
-    ],
+    data: [{ name: 'Material' }, { name: 'Color', component: 'color' }, { name: 'size' }],
   })
 
   await prisma.productVariationType.createMany({
@@ -271,8 +254,8 @@ export const seed = async () => {
           quantity: 5,
           variationId: v.id,
         },
-      })
-    )
+      }),
+    ),
   )
 }
 

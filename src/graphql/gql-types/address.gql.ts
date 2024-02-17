@@ -8,7 +8,7 @@ export const addressTypeDefs = gql`
     city: City!
     zipcode: String
     default: Boolean
-  } 
+  }
 
   input CreateAddressInput {
     address: String!

@@ -44,7 +44,7 @@ const app = async () => {
     '/graphql',
     expressMiddleware(server, {
       context,
-    })
+    }),
   )
 
   await new Promise<void>((resolve) => httpServer.listen({ port }, resolve))

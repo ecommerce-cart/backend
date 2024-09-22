@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Generate Prisma client
 echo "Generating Prisma client..."

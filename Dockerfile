@@ -13,14 +13,10 @@ COPY ./yarn.lock ./
 # Install dependencies
 RUN yarn
 
-# Generate Prisma client
-RUN npx prisma generate
-
 # Copy the rest of the project files
 COPY . .
 
-# Give executable permission to the start-backend.sh script
-RUN chmod +x ./start-backend.sh
+RUN chmod +x ./start-dev.sh
 
 # Install the remaining dependencies
 RUN yarn install

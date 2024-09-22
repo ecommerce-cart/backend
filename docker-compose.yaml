@@ -1,3 +1,5 @@
+version: '3.3'
+
 services:
   backend:
     container_name: backend
@@ -8,11 +10,10 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./:/home/node/backend
-      - node_modules:/home/node/backend/node_modules
     ports:
       - '6002:6002'
       - '6001:5555'
-    command: ./start-backend.sh
+    command: sh ./start-dev.sh
 
   db:
     container_name: db_container
@@ -48,4 +49,3 @@ services:
 volumes:
   postgres:
   pgadmin:
-  node_modules:

@@ -29,9 +29,9 @@ export const cartResolvers = {
     },
   },
   Mutation: {
-    async addToCart(_, { input }) {
+    async addToCart(_, { input }, { customer }) {
       await addToCartValidator.validate(input, { abortEarly: false })
-      await service.addToCart(input)
+      await service.addToCart({ ...input, customerId: customer.id })
       return true
     },
     async updateCartQuantity(_, { input }) {

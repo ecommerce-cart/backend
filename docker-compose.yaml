@@ -10,11 +10,10 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./:/home/node/backend
-      - node_modules:/home/node/backend/node_modules
     ports:
       - '6002:6002'
       - '6001:5555'
-    command: npm run dev
+    command: sh ./start-dev.sh
 
   db:
     container_name: db_container
@@ -28,6 +27,11 @@ services:
     ports:
       - '5432:5432'
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   pgadmin:
     container_name: pgadmin_container
@@ -38,13 +42,10 @@ services:
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     volumes:
        - pgadmin:/var/lib/pgadmin
-
     ports:
       - "${PGADMIN_PORT:-5050}:80"
-      
     restart: unless-stopped
 
 volumes:
   postgres:
   pgadmin:
-  node_modules:

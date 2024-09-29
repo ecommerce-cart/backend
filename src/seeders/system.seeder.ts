@@ -6,88 +6,6 @@ import { generateRefreshToken } from '../services/lib/jwt.service'
 
 const prisma = prismaClient
 
-const createColorVariationsFor = async (productId: number, materialName: 'Cotton' | 'Soft') => {
-  const parentId = (
-    await prisma.variation.findFirst({
-      where: {
-        name: materialName,
-      },
-    })
-  ).id
-
-  return prisma.variation.createMany({
-    data: [
-      {
-        name: 'Off White',
-        value: '#F6EFE9',
-        slug: 'off-white',
-        price: 100 * 270,
-        typeId: 2, // color
-        productId,
-        parentId,
-      },
-      {
-        name: 'Black',
-        value: '#292238',
-        slug: 'black',
-        price: 100 * 270,
-        typeId: 2,
-        productId,
-        parentId,
-      },
-      {
-        name: materialName === 'Cotton' ? 'Green' : 'Red',
-        value: materialName === 'Cotton' ? '#A7E3D2' : 'red',
-        slug: materialName === 'Cotton' ? 'green' : 'red',
-        price: 100 * 270,
-        typeId: 2,
-        productId,
-        parentId,
-      },
-    ],
-  })
-}
-
-const createSizeVariationsFor = async (productId: number, colorSlug: 'off-white' | 'black' | 'green' | 'red') => {
-  const parentIds = (
-    await prisma.variation.findMany({
-      where: {
-        slug: colorSlug,
-      },
-    })
-  ).map((v) => v.id)
-
-  return Promise.all(
-    parentIds.map((parentId) =>
-      prisma.variation.createMany({
-        data: [
-          {
-            name: 'S',
-            price: 100 * 270,
-            parentId,
-            productId,
-            typeId: 3, // size
-          },
-          {
-            name: 'M',
-            price: 100 * 270,
-            parentId,
-            productId,
-            typeId: 3, // size
-          },
-          {
-            name: colorSlug === 'red' ? 'XL' : 'L',
-            price: 100 * 270,
-            parentId,
-            productId,
-            typeId: 3, // size
-          },
-        ],
-      }),
-    ),
-  )
-}
-
 const tableNames = [
   // 'Vendor',
   'Customer',
@@ -176,49 +94,133 @@ export const seed = async () => {
     data: [{ name: 'Material' }, { name: 'Color', component: 'color' }, { name: 'size' }],
   })
 
+  await prisma.variation.createMany({
+    data: [
+      {
+        id: 1,
+        name: 'Cotton',
+        variationTypeId: 1, // material
+        slug: 'cotton',
+      },
+      {
+        id: 2,
+        name: 'Soft',
+        variationTypeId: 1, // material
+        slug: 'soft',
+      },
+      {
+        id: 3,
+        name: 'Off White',
+        slug: 'off-white',
+        value: '#F6EFE9',
+        variationTypeId: 2, // color
+      },
+      {
+        id: 4,
+        name: 'Black',
+        slug: 'black',
+        value: '#000000',
+        variationTypeId: 2, // color
+      },
+      {
+        id: 5,
+        name: 'Green',
+        slug: 'green',
+        value: '#A7E3D2',
+        variationTypeId: 2, // color
+      },
+      {
+        id: 6,
+        name: 'Red',
+        slug: 'red',
+        value: '#FF0000',
+        variationTypeId: 2, // color
+      },
+      {
+        id: 7,
+        name: 'S',
+        variationTypeId: 3, // size
+        slug: 's',
+      },
+      {
+        id: 8,
+        name: 'M',
+        variationTypeId: 3, // size
+        slug: 'm',
+      },
+      {
+        id: 9,
+        name: 'L',
+        variationTypeId: 3, // size
+        slug: 'l',
+      },
+      {
+        id: 10,
+        name: 'XL',
+        variationTypeId: 3, // size
+        slug: 'xl',
+      },
+    ],
+  })
+
   await prisma.productVariationType.createMany({
     data: [
       {
+        id: 1, // Material
         productId: 1,
         variationTypeId: 1,
       },
       {
+        id: 2, // Color
         productId: 1,
         variationTypeId: 2,
       },
       {
+        id: 3, // Size
         productId: 1,
         variationTypeId: 3,
       },
     ],
   })
 
-  await prisma.variation.createMany({
-    data: [
-      {
-        name: 'Soft',
-        price: 100 * 270,
-        typeId: 1,
-        productId: 1,
-        slug: 'soft',
-      },
-      {
-        name: 'Cotton',
-        price: 100 * 270,
-        typeId: 1,
-        productId: 1,
-        slug: 'cotton',
-      },
+  const productToVariationMapper = {
+    1: [
+      { variationId: 1, price: 100 * 270, productVariationTypeId: 1 }, // 1- Cotton
+      { variationId: 2, price: 100 * 270, productVariationTypeId: 1 }, // 2- Soft
+
+      { variationId: 3, price: 100 * 270, productVariationTypeId: 2, parentId: 1 }, // 3- Cotton - Off White
+      { variationId: 4, price: 100 * 270, productVariationTypeId: 2, parentId: 1 }, // 4- Cotton - Black
+      { variationId: 5, price: 100 * 270, productVariationTypeId: 2, parentId: 1 }, // 5- Cotton - Green
+      { variationId: 6, price: 100 * 270, productVariationTypeId: 2, parentId: 1 }, // 6- Cotton - Red
+
+      { variationId: 7, price: 100 * 270, productVariationTypeId: 3, parentId: 3 }, // 7- Cotton - Off White - S
+      { variationId: 8, price: 100 * 270, productVariationTypeId: 3, parentId: 3 }, // 8- Cotton - Off White - M
+      { variationId: 9, price: 100 * 270, productVariationTypeId: 3, parentId: 3 }, // 9- Cotton - Off White - L
+
+      { variationId: 7, price: 100 * 270, productVariationTypeId: 3, parentId: 5 }, // 10- Cotton - Green - S
+      { variationId: 8, price: 100 * 270, productVariationTypeId: 3, parentId: 5 }, // 11- Cotton - Green - M
+      { variationId: 9, price: 100 * 270, productVariationTypeId: 3, parentId: 5 }, // 12- Cotton - Green - L
+
+      { variationId: 3, price: 100 * 270, productVariationTypeId: 2, parentId: 2 }, // 13- Soft - Off White
+      { variationId: 4, price: 100 * 270, productVariationTypeId: 2, parentId: 2 }, // 14- Soft - Black
+
+      { variationId: 7, price: 100 * 270, productVariationTypeId: 3, parentId: 13 }, // 15- Soft - Off White - S
+      { variationId: 8, price: 100 * 270, productVariationTypeId: 3, parentId: 13 }, // 16- Soft - Off White - M
+
+      { variationId: 7, price: 100 * 270, productVariationTypeId: 3, parentId: 14 }, // 17- Soft - Black - S
+      { variationId: 8, price: 100 * 270, productVariationTypeId: 3, parentId: 14 }, // 18- Soft - Black - M
+      { variationId: 9, price: 100 * 270, productVariationTypeId: 3, parentId: 14 }, // 19- Soft - Black - L
     ],
-  })
+  }
 
-  await createColorVariationsFor(1, 'Soft')
-  await createColorVariationsFor(1, 'Cotton')
-
-  await createSizeVariationsFor(1, 'off-white')
-  await createSizeVariationsFor(1, 'black')
-  await createSizeVariationsFor(1, 'green')
-  await createSizeVariationsFor(1, 'red')
+  for (const productId in productToVariationMapper) {
+    await prisma.productVariation.createMany({
+      data: productToVariationMapper[productId].map((pv) => ({
+        ...pv,
+        productId: Number(productId),
+      })),
+    })
+  }
 
   await prisma.media.createMany({
     data: [
@@ -245,18 +247,14 @@ export const seed = async () => {
     ],
   })
 
-  const variations = await prisma.variation.findMany({})
+  const productVariations = await prisma.productVariation.findMany({})
 
-  await Promise.all(
-    variations.map((v) =>
-      prisma.availableStock.create({
-        data: {
-          quantity: 5,
-          variationId: v.id,
-        },
-      }),
-    ),
-  )
+  await prisma.availableStock.createMany({
+    data: productVariations.map((pv) => ({
+      quantity: 5,
+      variationId: pv.id,
+    })),
+  })
 }
 
 seed()

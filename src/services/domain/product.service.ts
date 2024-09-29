@@ -68,18 +68,19 @@ export const getProductById = async (id: number) => {
     include: {
       productVariationTypes: {
         include: {
-          variationType: {
+          productVariations: {
             include: {
-              variations: {
-                include: {
-                  availableStock: true,
-                },
-                where: {
-                  productId: id,
+              children: {
+                select: {
+                  id: true,
                 },
               },
+              productVariationType: true,
+              availableStock: true,
+              variation: true,
             },
           },
+          variationType: true,
         },
       },
     },

@@ -17,7 +17,11 @@ export const cartResolvers = {
               product: true,
               variations: {
                 include: {
-                  variation: true,
+                  productVariation: {
+                    include: {
+                      variation: true,
+                    },
+                  },
                 },
               },
             },

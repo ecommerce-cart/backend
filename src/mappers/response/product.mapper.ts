@@ -1,24 +1,7 @@
 import { money } from '../../services/lib/money'
-import { variationMapper } from './variation.mapper'
+import { productVariationMapper } from './variation.mapper'
 import { Media, Product } from '../../types/models/index.types'
 
-export const getMinMaxPrice = (product: Product) => {
-  let minPrice = product.price || 0
-  let maxPrice = product.price
-
-  product.productVariationTypes.forEach((pvt) => {
-    pvt.variationType.variations.map((v) => {
-      if (v.price < minPrice) {
-        minPrice = v.price
-      }
-      if (v.price > maxPrice) {
-        maxPrice = product.price
-      }
-    })
-  })
-
-  return [minPrice, maxPrice]
-}
 
 export const productMapper = async (p: Product, images: Array<Media>) => {
   return {
@@ -32,7 +15,7 @@ export const productMapper = async (p: Product, images: Array<Media>) => {
       id: pvt.variationTypeId,
       name: pvt.variationType.name,
       component: pvt.variationType.component,
-      variations: pvt.variationType.variations.map(variationMapper),
+      variations: pvt.productVariations.map(productVariationMapper),
     })),
   }
 }

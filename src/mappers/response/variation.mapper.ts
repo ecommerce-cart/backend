@@ -1,13 +1,14 @@
-import { Variation } from '../../types/models/index.types'
+import { ProductVariation } from '../../types/models/index.types'
 
-export const variationMapper = (variation: Variation) => {
+export const productVariationMapper = (productVariation: ProductVariation) => {
   return {
-    id: variation.id,
-    value: variation.value,
-    name: variation.name,
-    price: variation.price,
-    quantity: variation.availableStock.quantity,
-    typeId: variation.typeId,
-    parentId: variation.parentId,
+    id: productVariation.id,
+    value: productVariation.variation.value,
+    name: productVariation.variation.name,
+    price: productVariation.price,
+    quantity: productVariation.availableStock.quantity || 0,
+    typeId: productVariation.productVariationType.id,
+    parentId: productVariation.parentId,
+    children: productVariation.children,
   }
 }

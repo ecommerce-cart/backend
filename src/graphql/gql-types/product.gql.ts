@@ -9,6 +9,7 @@ export const productTypeDefs = gql`
     quantity: Int!
     type: Type
     parent: Variation
+    children: [Variation]
     parentId: Int
     typeId: Int
     typeName: String

@@ -11,6 +11,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Customer {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  phone        String?  @unique
+  name         String
+  password     String
+  refreshToken String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  orders    Order[]
+  cart      Cart?
+  addresses Address[]
+}
+
 model Category {
   id        Int      @id @default(autoincrement())
   name      String   @db.VarChar(255)
@@ -32,8 +47,7 @@ model Product {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  variations Variation[]
-
+  productVariations     ProductVariation[]
   categories            ProductCategory[]
   productVariationTypes ProductVariationType[]
   orderProduct          OrderProduct[]
@@ -63,35 +77,48 @@ model VariationType {
   productVariationType ProductVariationType[]
 }
 
-model ProductVariationType {
-  product         Product       @relation(fields: [productId], references: [id])
-  variationType   VariationType @relation(fields: [variationTypeId], references: [id])
-  productId       Int
+model Variation {
+  id              Int     @id @default(autoincrement())
+  name            String  @db.VarChar(255)
+  slug            String  @db.VarChar(255)
+  value           String? @db.VarChar(255)
   variationTypeId Int
 
-  @@id([productId, variationTypeId])
-}
+  variationType     VariationType      @relation(fields: [variationTypeId], references: [id])
+  productVariations ProductVariation[]
 
-model Variation {
-  id        Int      @id @default(autoincrement())
-  name      String   @db.VarChar(255)
-  value     String?  @db.VarChar(255)
-  slug      String?  @db.VarChar(255)
-  price     Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  parentId  Int?
-  typeId    Int
-  productId Int
+}
 
-  parent               Variation?             @relation("ChildToParent", fields: [parentId], references: [id])
-  children             Variation[]            @relation("ChildToParent")
-  type                 VariationType          @relation(fields: [typeId], references: [id])
-  Product              Product?               @relation(fields: [productId], references: [id])
-  orderVariations      OrderVariation[]
-  stock                Stock[]
-  availableStock       AvailableStock?
-  cartProductVariation CartProductVariation[]
+model ProductVariationType {
+  id                Int                @id @default(autoincrement())
+  product           Product            @relation(fields: [productId], references: [id])
+  variationType     VariationType      @relation(fields: [variationTypeId], references: [id])
+  productVariations ProductVariation[]
+  productId         Int
+  variationTypeId   Int
+}
+
+model ProductVariation {
+  id                     Int      @id @default(autoincrement())
+  price                  Int
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  parentId               Int?
+  variationId            Int
+  productVariationTypeId Int
+  productId              Int
+
+  parent                ProductVariation?      @relation("ChildToParent", fields: [parentId], references: [id])
+  children              ProductVariation[]     @relation("ChildToParent")
+  variation             Variation              @relation(fields: [variationId], references: [id])
+  productVariationType  ProductVariationType   @relation(fields: [productVariationTypeId], references: [id])
+  Product               Product                @relation(fields: [productId], references: [id])
+  orderVariations       OrderVariation[]
+  stocks                Stock[]
+  availableStock        AvailableStock?
+  cartProductVariations CartProductVariation[]
 }
 
 model Stock {
@@ -101,7 +128,7 @@ model Stock {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  variation Variation @relation(fields: [variationId], references: [id])
+  productVariation ProductVariation @relation(fields: [variationId], references: [id])
 }
 
 model AvailableStock {
@@ -111,22 +138,7 @@ model AvailableStock {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  variation Variation @relation(fields: [variationId], references: [id])
-}
-
-model Customer {
-  id           Int      @id @default(autoincrement())
-  email        String   @unique
-  phone        String?  @unique
-  name         String
-  password     String
-  refreshToken String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  orders    Order[]
-  cart      Cart?
-  addresses Address[]
+  productVariation ProductVariation @relation(fields: [variationId], references: [id])
 }
 
 model Cart {
@@ -157,8 +169,8 @@ model CartProductVariation {
   quantity      Int @default(1)
   cartProductId Int
 
-  cartProduct CartProduct @relation(fields: [cartProductId], references: [id], onDelete: Cascade)
-  variation   Variation   @relation(fields: [variationId], references: [id])
+  cartProduct      CartProduct      @relation(fields: [cartProductId], references: [id], onDelete: Cascade)
+  productVariation ProductVariation @relation(fields: [variationId], references: [id])
 
   @@id([variationId, cartProductId])
 }
@@ -204,8 +216,8 @@ model OrderVariation {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  orderProduct OrderProduct @relation(fields: [orderProductId], references: [id], onDelete: Cascade)
-  variation    Variation    @relation(fields: [variationId], references: [id])
+  orderProduct     OrderProduct     @relation(fields: [orderProductId], references: [id], onDelete: Cascade)
+  productVariation ProductVariation @relation(fields: [variationId], references: [id])
 }
 
 model Media {

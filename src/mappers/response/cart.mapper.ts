@@ -2,7 +2,7 @@ import { money } from '../../services/lib/money'
 import { Cart, CartProductVariation } from '../../types/models/index.types'
 
 const getMaxVariationPrice = (variations: Array<CartProductVariation>) => {
-  return Math.max(...variations.map((v) => v.variation.price))
+  return Math.max(...variations.map((v) => v.productVariation.price))
 }
 export const cartMapper = (cart: Cart) => {
   let subTotal = 0
@@ -16,7 +16,7 @@ export const cartMapper = (cart: Cart) => {
             return {
               id: cartProduct.id,
               title: `${cartProduct.product.name} ${cartProduct.variations
-                .map((v) => ` / ${v.variation.name}`)
+                .map((cartProductVariation) => ` / ${cartProductVariation.productVariation.variation.name}`)
                 .join(' ')}`,
               quantity: cartProduct.quantity,
               price,

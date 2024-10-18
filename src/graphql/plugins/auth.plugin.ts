@@ -19,7 +19,7 @@ export const authPlugin: ApolloServerPlugin<MyContext> = {
           'UpdateCartQuantity',
           'DeleteCartProduct',
           // FIXME: you need to keep naming consistent
-          'orders'
+          'orders',
         ]
         // Check if the operation is one of the protected queries/mutations
         if (protectedQueriesAndMutations.includes(operationName) && !contextValue.customer) {

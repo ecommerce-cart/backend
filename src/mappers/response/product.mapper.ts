@@ -2,7 +2,6 @@ import { money } from '../../services/lib/money'
 import { productVariationMapper } from './variation.mapper'
 import { Media, Product } from '../../types/models/index.types'
 
-
 export const productMapper = async (p: Product, images: Array<Media>) => {
   return {
     id: p.id,

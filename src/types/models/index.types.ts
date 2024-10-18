@@ -202,6 +202,7 @@ export interface Country {
   id: number
   name: string
   code: string
+  addresses: Address[]
   cities: City[]
 }
 
@@ -218,10 +219,12 @@ export interface Address {
   id: number
   customerId: number
   default: boolean
-  street: string
+  street1: string
+  street2?: string | null
   state: string
   cityId: number
-  zipcode?: string | null
+  zipCode?: string | null
   city: City
+  country: Country
   customer: Customer
 }

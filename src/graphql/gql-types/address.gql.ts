@@ -3,15 +3,18 @@ import { gql } from 'apollo-server'
 export const addressTypeDefs = gql`
   type Address {
     id: ID!
-    street: String!
+    street1: String!
+    street2: String
     state: String!
     city: City!
-    zipcode: String
+    country: Country!
+    zipCode: String
     default: Boolean
   }
 
   input CreateAddressInput {
-    address: String!
+    street1: String!
+    street2: String
     city: String!
     country: String!
     state: String!

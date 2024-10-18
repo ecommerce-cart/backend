@@ -8,6 +8,7 @@ export const authPlugin: ApolloServerPlugin<MyContext> = {
     return {
       async didResolveOperation({ operationName, contextValue }) {
         // Specify the queries/mutations that require authentication
+        //FIXME: we need to figure another way instead of depending on the operation name
         const protectedQueriesAndMutations = [
           'Categories',
           'MeCustomer',
@@ -17,6 +18,8 @@ export const authPlugin: ApolloServerPlugin<MyContext> = {
           'AddToCart',
           'UpdateCartQuantity',
           'DeleteCartProduct',
+          // FIXME: you need to keep naming consistent
+          'orders'
         ]
         // Check if the operation is one of the protected queries/mutations
         if (protectedQueriesAndMutations.includes(operationName) && !contextValue.customer) {

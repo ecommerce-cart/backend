@@ -234,10 +234,11 @@ model Media {
 }
 
 model Country {
-  id     Int    @id @default(autoincrement())
-  name   String
-  code   String
-  cities City[]
+  id        Int       @id @default(autoincrement())
+  name      String
+  code      String
+  cities    City[]
+  addresses Address[]
 }
 
 model City {
@@ -254,11 +255,15 @@ model Address {
   id         Int     @id @default(autoincrement())
   customerId Int
   default    Boolean @default(true)
-  street     String
+  street1    String
+  street2    String?
+  additionalNote String?
   state      String
   cityId     Int
-  zipcode    String?
+  countryId  Int
+  zipCode    String?
 
   city     City     @relation(fields: [cityId], references: [id])
+  country  Country  @relation(fields: [countryId], references: [id])
   customer Customer @relation(fields: [customerId], references: [id])
 }
